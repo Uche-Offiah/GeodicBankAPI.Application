@@ -39,8 +39,6 @@ namespace GeodicBankAPI.Controllers
             //    var tokenString = GenerateJwtToken(authenticatedUser);
             //    return Ok(new { Token = tokenString });
             //}
-
-
             return Unauthorized();
         }
 
