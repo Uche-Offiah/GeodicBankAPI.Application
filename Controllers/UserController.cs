@@ -74,6 +74,20 @@ namespace GeodicBankAPI.Controllers
            return Ok();
         }
 
+        [HttpGet("TestLog")]
+        public void TestLog()
+        {
+            try
+            {
+                _logger.LogInformation("Test log");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(message: ex.Message, ex);
+                throw;
+            }
+        }
+
 
     }
 }
