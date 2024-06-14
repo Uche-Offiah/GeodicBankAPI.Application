@@ -7,6 +7,7 @@ using System.IO;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
+using DataStreamingService.Services;
 
 namespace GeodicBankAPI.Controllers
 {
@@ -18,11 +19,13 @@ namespace GeodicBankAPI.Controllers
         private readonly IConfiguration _config;
         private readonly FinancialDbContext _dbContext;
         private readonly IUser _user;
-        public UserController(IConfiguration config, FinancialDbContext dbContext, IUser user)
+        private readonly ILogger<UserController> _logger;
+        public UserController(IConfiguration config, FinancialDbContext dbContext, IUser user, ILogger<UserController> logger)
         {
             _config = config;
             _dbContext = dbContext;
             _user = user;
+            _logger = logger;
         }
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody] UserDto user)
@@ -36,7 +39,7 @@ namespace GeodicBankAPI.Controllers
 
             //if (authenticatedUser != null)
             //{
-            //    var tokenString = GenerateJwtToken(authenticatedUser);
+            //    var tokenString = _user.CreateJwtToken(user);
             //    return Ok(new { Token = tokenString });
             //}
             return Unauthorized();
@@ -71,6 +74,6 @@ namespace GeodicBankAPI.Controllers
            return Ok();
         }
 
-        
+
     }
 }
