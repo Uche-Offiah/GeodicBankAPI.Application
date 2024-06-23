@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using SignalRChatApplication;
+using StackExchange.Redis;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,6 +54,18 @@ builder.WithOrigins(
     "http://localhost:7156",
     "https://localhost:5131").AllowAnyMethod().AllowAnyHeader().AllowCredentials()));
 
+builder.Services.AddSignalR(options =>
+{
+    options.EnableDetailedErrors = true;
+});
+
+//Configure Redis for distributed caching and message persistence
+builder.Services.AddSingleton<IConnectionMultiplexer>(provider =>
+{
+    var configuration = ConfigurationOptions.Parse(builder.Configuration["RedisConnection"]);
+    return ConnectionMultiplexer.Connect(configuration);
+});
+
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
@@ -74,6 +88,7 @@ IConfiguration configuration = app.Configuration;
 IWebHostEnvironment environment = app.Environment;
 
 app.MapControllers();
+app.MapHub<ChatHub>("/chat");
 
 using (var serviceScope = app.Services.CreateScope())
 {
