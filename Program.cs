@@ -38,7 +38,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).AddEnvironmentVariables();
-builder.Services.AddTransient<ITransaction, TransactionService>();
+builder.Services.AddTransient<IGeodicTransaction, TransactionService>();
 builder.Services.AddTransient<IUser, UserService>();
 
 builder.Services.AddDbContext<FinancialDbContext>(options =>
