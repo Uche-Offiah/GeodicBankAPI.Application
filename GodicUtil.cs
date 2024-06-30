@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json.Linq;
+using GeodicBankAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
@@ -48,6 +48,19 @@ namespace GeodicBankAPI
                 LogStuff(ex.ToString(), "GodicApiLogs");
             }
 
+        }
+
+        public static async Task SendEmailNotification(object payload)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                using (var httpResponse = await client.PostAsync($"https://placeholder.ng/api/Notifications/email", new JsonContent(payload)))
+                {
+                    var content = httpResponse.Content;
+                    var resultString = await content.ReadAsStringAsync();
+                    LogStuff($"Payload = {payload}\nResponse = {resultString}", "EmailNotifications");
+                }
+            }
         }
     }
 }
