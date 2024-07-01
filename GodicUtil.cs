@@ -80,5 +80,29 @@ namespace GeodicBankAPI
                 return builder.ToString();
             }
         }
+
+        public static byte[] EncryptStringToBytes(string plainText, string initializationVector)
+        {
+            using (Aes aesAlg = Aes.Create())
+            {
+                aesAlg.Key = Encoding.UTF8.GetBytes("YourSecretKeyGoesHere");
+                // Set an initialization vector (IV) for additional security
+                aesAlg.IV = Encoding.UTF8.GetBytes(initializationVector);
+
+                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+                using (MemoryStream msEncrypt = new MemoryStream())
+                {
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        {
+                            swEncrypt.Write(plainText);
+                        }
+                    }
+                    return msEncrypt.ToArray();
+                }
+            }
+        }
     }
 }
