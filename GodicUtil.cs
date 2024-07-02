@@ -104,5 +104,29 @@ namespace GeodicBankAPI
                 }
             }
         }
+
+        public static string DecryptStringFromBytes(byte[] cipherText, string initializationVector)
+        {
+            using (Aes aesAlg = Aes.Create())
+            {
+                aesAlg.Key = Encoding.UTF8.GetBytes("YourSecretKeyGoesHere");
+
+                // Set an initialization vector (IV) for additional security
+                aesAlg.IV = Encoding.UTF8.GetBytes(initializationVector);
+
+                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+                using (MemoryStream msDecrypt = new MemoryStream(cipherText))
+                {
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        {
+                            return srDecrypt.ReadToEnd();
+                        }
+                    }
+                }
+            }
+        }
     }
 }
