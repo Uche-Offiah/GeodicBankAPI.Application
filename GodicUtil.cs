@@ -128,5 +128,30 @@ namespace GeodicBankAPI
                 }
             }
         }
+
+        public static dynamic GetValueOrDefault(JObject jObject, string propertyName)
+        {
+            if (jObject.TryGetValue(propertyName, out var value))
+            {
+                if (value.Type == JTokenType.String)
+                {
+                    return value.ToString();
+                }
+                else if (value.Type == JTokenType.Object)
+                {
+                    var nameProperty = value.Value<string>("Name");
+                    if (nameProperty != null)
+                    {
+                        return nameProperty;
+                    }
+                }
+                else if (value.Type == JTokenType.Boolean)
+                {
+                    return (bool)value ? "YES" : "NO";
+                }
+            }
+
+            return null;
+        }
     }
 }
