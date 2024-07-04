@@ -153,5 +153,11 @@ namespace GeodicBankAPI
 
             return null;
         }
+
+        public static string ConvertPascalCaseToSplitWords(string pascalCaseString)
+        {
+            string splitWords = Regex.Replace(pascalCaseString, "(?<!^)([A-Z])", " $1");
+            return splitWords.Trim();
+        }
     }
 }
