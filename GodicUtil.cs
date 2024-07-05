@@ -160,5 +160,11 @@ namespace GeodicBankAPI
             string splitWords = Regex.Replace(pascalCaseString, "(?<!^)([A-Z])", " $1");
             return splitWords.Trim();
         }
+
+        static string RemoveTrailingDashes(string input)
+        {
+            if (input == null) return input;
+            return Regex.Replace(input, @"^-+", "");
+        }
     }
 }
