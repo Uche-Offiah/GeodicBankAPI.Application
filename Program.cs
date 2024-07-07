@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using GeodicBankAPI.Application.Interfaces;
 using GeodicBankAPI.Application.Services;
 using GeodicBankAPI.Domain;
@@ -53,6 +54,23 @@ builder.Services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>
 builder.WithOrigins(
     "http://localhost:7156",
     "https://localhost:5131").AllowAnyMethod().AllowAnyHeader().AllowCredentials()));
+
+// Add Rate Limiting
+builder.Services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+//builder.Services.AddSingleton<IRateLimitStore<RateLimitRule>, MemoryCacheRateLimitStore>();
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+builder.Services.Configure<IpRateLimitOptions>(options =>
+{
+    options.GeneralRules = new List<RateLimitRule>
+    {
+         new RateLimitRule
+         {
+             Endpoint = "*",
+             Period = "1m",
+             Limit = 100
+         }
+    };
+});
 
 builder.Services.AddSignalR(options =>
 {
